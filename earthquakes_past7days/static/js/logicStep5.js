@@ -30,7 +30,7 @@ let earthquakes = new L.LayerGroup();
 
 //We define an object that contains the overlays. This overlay will be visible all the time. 
 let overlays = {
-    Earthquakes: earthquakes 
+    Earthquakes: earthquakes
 };
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
@@ -90,7 +90,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
         }
         return magnitude * 4;
     }
-    
+
     // Creating a GeoJSON layer with the retrieved data.
     L.geoJson(data, {
         // We turn each feature into a circleMarker on the map.
@@ -107,5 +107,35 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
         }
     }).addTo(earthquakes);
 
-        earthquakes.addTo(map);
+    earthquakes.addTo(map);
 });
+
+// Create a legend control object.
+let legend = L.control({
+    position: "bottomright"
+});
+
+// Then add all the details for the legend.
+legend.onAdd = function () {
+    let div = L.DomUtil.create("div", "info legend");
+    const magnitudes = [0, 1, 2, 3, 4, 5];
+    const colors = [
+        "#98ee00",
+        "#d4ee00",
+        "#eecc00",
+        "#ee9c00",
+        "#ea822c",
+        "#ea2c2c"
+    ];
+
+    // Looping through our intervals to generate a label with a colored square for each interval.
+    for (var i = 0; i < magnitudes.length; i++) {
+        console.log(colors[i]);
+        div.innerHTML +=
+            "<i style='background: " + colors[i] + "'></i> " +
+            magnitudes[i] + (magnitudes[i + 1] ? "&ndash;" + magnitudes[i + 1] + "<br>" : "+");
+    }
+    return div;
+};
+
+legend.addTo(map);
